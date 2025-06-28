@@ -1,0 +1,37 @@
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: nginx-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-app
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50  # CPU 50% 이상일 때 스케일 아웃
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 70  # 메모리 70% 이상일 때 스케일 아웃
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: 30   # 30초 안정화 기간
+      policies:
+      - type: Percent
+        value: 100  # 한 번에 최대 100% 증가 (2개 -> 4개)
+        periodSeconds: 60
+    scaleDown:
+      stabilizationWindowSeconds: 300  # 5분 안정화 기간
+      policies:
+      - type: Percent
+        value: 50   # 한 번에 최대 50% 감소
+        periodSeconds: 60

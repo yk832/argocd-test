@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nginx-app
 spec:
-  replicas: 3
+  replicas: 2  # 초기 레플리카 2개
   selector:
     matchLabels:
       app: nginx-app
@@ -22,7 +22,7 @@ spec:
         resources:
           requests:
             memory: "64Mi"
-            cpu: "250m"
+            cpu: "100m"      # CPU 요청: 0.1 코어
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "200m"      # CPU 제한: 0.2 코어
